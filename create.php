@@ -26,7 +26,7 @@ class DatabaseInitializer
         $pdo->exec("USE university_db");
 
         $sql = "CREATE TABLE IF NOT EXISTS user_roles (
-            role_id INT NOT NULL,
+            role_id INT NOT NULL AUTO_INCREMENT,
             role_name VARCHAR(30) NOT NULL,
             PRIMARY KEY (role_id),
             UNIQUE (role_name)
@@ -34,7 +34,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS Users (
-            User_ID INT NOT NULL,
+            User_ID INT NOT NULL AUTO_INCREMENT,
             Username VARCHAR(30) NOT NULL,
             Password_hash VARCHAR(255) NOT NULL,
             email VARCHAR(30) NOT NULL,
@@ -47,7 +47,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS academic_titles (
-            academic_title_id INT NOT NULL,
+            academic_title_id INT NOT NULL AUTO_INCREMENT,
             academic_title_name VARCHAR(30) NOT NULL,
             PRIMARY KEY (academic_title_id),
             UNIQUE (academic_title_name)
@@ -55,7 +55,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS departments (
-            department_ID INT NOT NULL,
+            department_ID INT NOT NULL AUTO_INCREMENT,
             department_name VARCHAR(30) NOT NULL,
             PRIMARY KEY (department_ID),
             UNIQUE (department_name)
@@ -63,7 +63,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS specialties (
-            specialty_ID INT NOT NULL,
+            specialty_ID INT NOT NULL AUTO_INCREMENT,
             department_id INT NOT NULL,
             specialty_name VARCHAR(30) NOT NULL,
             PRIMARY KEY (specialty_ID),
@@ -72,7 +72,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS semesters (
-            semester_id INT NOT NULL,
+            semester_id INT NOT NULL AUTO_INCREMENT,
             semester_name VARCHAR(30) NOT NULL,
             PRIMARY KEY (semester_id),
             UNIQUE (semester_name)
@@ -80,7 +80,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS subjects (
-            subject_id INT NOT NULL,
+            subject_id INT NOT NULL AUTO_INCREMENT,
             department_id INT NOT NULL,
             subject_name VARCHAR(30) NOT NULL,
             credits INT NOT NULL CHECK (credits > 0),
@@ -90,7 +90,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS enrollment_status (
-            enrollment_status_id INT NOT NULL,
+            enrollment_status_id INT NOT NULL AUTO_INCREMENT,
             enrollment_status_name VARCHAR(30) NOT NULL,
             PRIMARY KEY (enrollment_status_id),
             UNIQUE (enrollment_status_name)
@@ -98,7 +98,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS action_grade_history (
-            action_id INT NOT NULL,
+            action_id INT NOT NULL AUTO_INCREMENT,
             action_name VARCHAR(50) NOT NULL,
             PRIMARY KEY (action_id),
             UNIQUE (action_name)
@@ -106,7 +106,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS scholarship_application_status (
-            application_status_id INT NOT NULL,
+            application_status_id INT NOT NULL AUTO_INCREMENT,
             status_name VARCHAR(50) NOT NULL,
             PRIMARY KEY (application_status_id),
             UNIQUE (status_name)
@@ -114,7 +114,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS teachers (
-            teacher_id INT NOT NULL,
+            teacher_id INT NOT NULL AUTO_INCREMENT,
             user_id INT NOT NULL,
             department_id INT NOT NULL,
             teacher_name VARCHAR(30) NOT NULL,
@@ -132,7 +132,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS Students (
-            Student_ID INT NOT NULL,
+            Student_ID INT NOT NULL AUTO_INCREMENT,
             User_id INT NOT NULL,
             Specialty_ID INT NOT NULL,
             faculty_number VARCHAR(30) NOT NULL,
@@ -149,7 +149,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS open_courses (
-            open_course_id INT NOT NULL,
+            open_course_id INT NOT NULL AUTO_INCREMENT,
             subject_id INT NOT NULL,
             semester_id INT NOT NULL,
             PRIMARY KEY (open_course_id),
@@ -160,7 +160,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS teacher_assignments (
-            teacher_assignment_id INT NOT NULL,
+            teacher_assignment_id INT NOT NULL AUTO_INCREMENT,
             open_course_id INT NOT NULL,
             teacher_id INT NOT NULL,
             PRIMARY KEY (teacher_assignment_id),
@@ -171,7 +171,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS semester_enrollments (
-            semester_enrollment_ID INT NOT NULL,
+            semester_enrollment_ID INT NOT NULL AUTO_INCREMENT,
             student_id INT NOT NULL,
             semester_id INT NOT NULL,
             course INT NOT NULL CHECK (course >= 1 AND course <= 6),
@@ -186,7 +186,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS enrollment_subjects (
-            enrollment_subject_id INT NOT NULL,
+            enrollment_subject_id INT NOT NULL AUTO_INCREMENT,
             semester_enrollment_id INT NOT NULL,
             open_course_id INT NOT NULL,
             PRIMARY KEY (enrollment_subject_id),
@@ -197,7 +197,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS grades (
-            grade_id INT NOT NULL,
+            grade_id INT NOT NULL AUTO_INCREMENT,
             enrollment_subject_id INT NOT NULL,
             grade DECIMAL(3, 2) NOT NULL CHECK (grade >= 2.00 AND grade <= 6.00),
             graded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -210,7 +210,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS grade_history (
-            grade_history_id INT NOT NULL,
+            grade_history_id INT NOT NULL AUTO_INCREMENT,
             enrollment_subject_id INT NOT NULL,
             old_grade DECIMAL(3, 2) CHECK (old_grade IS NULL OR (old_grade >= 2.00 AND old_grade <= 6.00)),
             new_grade DECIMAL(3, 2) NOT NULL CHECK (new_grade >= 2.00 AND new_grade <= 6.00),
@@ -226,7 +226,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS enrollment_history (
-            enrollment_history_id INT NOT NULL,
+            enrollment_history_id INT NOT NULL AUTO_INCREMENT,
             semester_enrollment_id INT NOT NULL,
             old_status_id INT NOT NULL,
             new_status_id INT NOT NULL,
@@ -242,7 +242,7 @@ class DatabaseInitializer
         $pdo->exec($sql);
 
         $sql = "CREATE TABLE IF NOT EXISTS scholarship_applications (
-            application_id INT NOT NULL,
+            application_id INT NOT NULL AUTO_INCREMENT,
             semester_enrollment_id INT NOT NULL,
             gpa DECIMAL(3, 2) NOT NULL CHECK (gpa >= 2.00 AND gpa <= 6.00),
             application_status_id INT NOT NULL,
