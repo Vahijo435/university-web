@@ -236,7 +236,7 @@ $sql = "CREATE TABLE IF NOT EXISTS scholarship_applications (
     gpa DECIMAL(3, 2) NOT NULL CHECK (gpa >= 2.00 AND gpa <= 6.00),
     application_status_id INT NOT NULL,
     reviewer_user_id INT NULL,
-    reviewer_comment VARCHAR(30),
+    reviewer_comment VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     reviewed_at TIMESTAMP NULL,
     PRIMARY KEY (application_id),
@@ -324,6 +324,7 @@ if ($count == 0) {
         $stmt = $pdo->prepare("INSERT INTO grades (grade_id, enrollment_subject_id, grade, graded_by_teacher_id) VALUES (:id, :subject_id, :grade, :teacher_id)");
         $stmt->execute(['id' => 1, 'subject_id' => 1, 'grade' => 5.50, 'teacher_id' => 1]);
         $stmt->execute(['id' => 2, 'subject_id' => 3, 'grade' => 6.00, 'teacher_id' => 1]);
+        $stmt->execute(['id' => 3, 'subject_id' => 2,'grade' => 4.50, 'teacher_id' => 1]);
 
         $stmt = $pdo->prepare("INSERT INTO action_grade_history (action_id, action_name) VALUES (:id, :name)");
         $stmt->execute(['id' => 1, 'name' => 'Създадена оценка']);
@@ -332,7 +333,7 @@ if ($count == 0) {
 
         $stmt = $pdo->prepare("INSERT INTO grade_history (grade_history_id, enrollment_subject_id, old_grade, new_grade, action_id, changed_by_user_id, reason) VALUES (:id, :enrollment_subject_id, :old_grade, :new_grade, :action_id, :user_id, :reason)");
         $stmt->execute(['id' => 1, 'enrollment_subject_id' => 1, 'old_grade' => null, 'new_grade' => 5.50, 'action_id' => 1, 'user_id' => 2, 'reason' => 'Първоначална оценка']);
-
+        $stmt->execute(['id' => 2,'enrollment_subject_id' => 2,'old_grade' => null,'new_grade' => 4.50,'action_id' => 1,'user_id' => 2,'reason' => 'Първоначална оценка']);
         $stmt = $pdo->prepare("INSERT INTO enrollment_history (enrollment_history_id, semester_enrollment_id, old_status_id, new_status_id, changed_by_user_id, reason) VALUES (:id, :enrollment_id, :old_status, :new_status, :user_id, :reason)");
         $stmt->execute(['id' => 1, 'enrollment_id' => 1, 'old_status' => 1, 'new_status' => 1, 'user_id' => 1, 'reason' => 'Първоначално записване']);
 
@@ -344,7 +345,7 @@ if ($count == 0) {
         $stmt = $pdo->prepare("INSERT INTO scholarship_applications (application_id,semester_enrollment_id, gpa, application_status_id, reviewer_user_id, reviewer_comment,created_at,reviewed_at) VALUES (:id, :semester_enrollment_id, :gpa, :application_status_id,:reviewer_user_id, :reviewer_comment, NOW(),:reviewed_at)");
         $stmt->execute(['id' => 1, 'semester_enrollment_id' => 1, 'gpa' => 5.00, 'application_status_id' => 2, 'reviewer_user_id' => 1,'reviewer_comment' => 'Одобрен поради добър академичен успех','reviewed_at' => date('Y-m-d H:i:s')]);
         $stmt->execute(['id' => 2, 'semester_enrollment_id' => 2,'gpa' => 6.00,'application_status_id' => 1, 'reviewer_user_id' => null,'reviewer_comment' => null,'reviewed_at' => null]);
-        
+
         $pdo->commit();
     } catch (Exception $e) {
         $pdo->rollBack();
