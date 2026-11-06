@@ -88,15 +88,17 @@ $pdo->exec($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS action_grade_history (
     action_id INT NOT NULL,
-    action_name INT NOT NULL,
-    PRIMARY KEY (action_id)
+    action_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (action_id),
+    UNIQUE (action_name)
 )";
 $pdo->exec($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS scholarship_application_status (
     application_status_id INT NOT NULL,
-    status_name INT NOT NULL,
-    PRIMARY KEY (application_status_id)
+    status_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (application_status_id),
+    UNIQUE (status_name)
 )";
 $pdo->exec($sql);
 
@@ -233,7 +235,7 @@ $sql = "CREATE TABLE IF NOT EXISTS scholarship_applications (
     semester_enrollment_id INT NOT NULL,
     gpa DECIMAL(3, 2) NOT NULL CHECK (gpa >= 2.00 AND gpa <= 6.00),
     application_status_id INT NOT NULL,
-    reviewer_user_id INT NOT NULL,
+    reviewer_user_id INT NULL,
     reviewer_comment VARCHAR(30),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     reviewed_at TIMESTAMP NULL,
@@ -278,13 +280,11 @@ if ($count == 0) {
         $stmt->execute(['id' => 1, 'department_id' => 1, 'name' => 'Софтуерно инженерство']);
         $stmt->execute(['id' => 2, 'department_id' => 2, 'name' => 'Компютърни системи']);
 
-        $stmt = $pdo->prepare("INSERT INTO teachers (teacher_id, user_id, department_id, teacher_name, phone_number, hire_date, academic_title_id, UCN) 
-                               VALUES (:id, :user_id, :dept_id, :name, :phone, :hire_date, :title_id, :ucn)");
+        $stmt = $pdo->prepare("INSERT INTO teachers (teacher_id, user_id, department_id, teacher_name, phone_number, hire_date, academic_title_id, UCN) VALUES (:id, :user_id, :dept_id, :name, :phone, :hire_date, :title_id, :ucn)");
         $stmt->execute(['id' => 1, 'user_id' => 2, 'dept_id' => 1, 'name' => 'Петър Петров',  'phone' => '0888111222', 'hire_date' => '2018-09-01', 'title_id' => 1, 'ucn' => '8001011111']);
         $stmt->execute(['id' => 2, 'user_id' => 3, 'dept_id' => 2, 'name' => 'Мария Иванова', 'phone' => '0888333444', 'hire_date' => '2020-02-15', 'title_id' => 2, 'ucn' => '8502022222']);
 
-        $stmt = $pdo->prepare("INSERT INTO Students (Student_ID, User_id, Specialty_ID, faculty_number, student_name, phone_number, UCN) 
-                               VALUES (:id, :user_id, :specialty_id, :faculty_num, :name, :phone, :ucn)");
+        $stmt = $pdo->prepare("INSERT INTO Students (Student_ID, User_id, Specialty_ID, faculty_number, student_name, phone_number, UCN) VALUES (:id, :user_id, :specialty_id, :faculty_num, :name, :phone, :ucn)");
         $stmt->execute(['id' => 1, 'user_id' => 4, 'specialty_id' => 1, 'faculty_num' => '21621501', 'name' => 'Иван Георгиев',   'phone' => '0888555666', 'ucn' => '0341013333']);
         $stmt->execute(['id' => 2, 'user_id' => 5, 'specialty_id' => 1, 'faculty_num' => '21621502', 'name' => 'Елена Димитрова', 'phone' => '0888777888', 'ucn' => '0342024444']);
 
@@ -312,8 +312,7 @@ if ($count == 0) {
         $stmt->execute(['id' => 2, 'name' => 'Заверил']);
         $stmt->execute(['id' => 3, 'name' => 'Прекъснал']);
 
-        $stmt = $pdo->prepare("INSERT INTO semester_enrollments (semester_enrollment_ID, student_id, semester_id, course, enrollment_status_id) 
-                               VALUES (:id, :student_id, :semester_id, :course, :status_id)");
+        $stmt = $pdo->prepare("INSERT INTO semester_enrollments (semester_enrollment_ID, student_id, semester_id, course, enrollment_status_id) VALUES (:id, :student_id, :semester_id, :course, :status_id)");
         $stmt->execute(['id' => 1, 'student_id' => 1, 'semester_id' => 1, 'course' => 1, 'status_id' => 1]);
         $stmt->execute(['id' => 2, 'student_id' => 2, 'semester_id' => 1, 'course' => 1, 'status_id' => 1]);
 
@@ -327,16 +326,25 @@ if ($count == 0) {
         $stmt->execute(['id' => 2, 'subject_id' => 3, 'grade' => 6.00, 'teacher_id' => 1]);
 
         $stmt = $pdo->prepare("INSERT INTO action_grade_history (action_id, action_name) VALUES (:id, :name)");
-        $stmt->execute(['id' => 1, 'name' => 1]);
+        $stmt->execute(['id' => 1, 'name' => 'Създадена оценка']);
+        $stmt->execute(['id' => 2, 'name' => 'Актуализирана оценка']);
+        $stmt->execute(['id' => 3, 'name' => 'Анулирана оценка']);
 
-        $stmt = $pdo->prepare("INSERT INTO grade_history (grade_history_id, enrollment_subject_id, old_grade, new_grade, action_id, changed_by_user_id, reason) 
-                               VALUES (:id, :enrollment_subject_id, :old_grade, :new_grade, :action_id, :user_id, :reason)");
+        $stmt = $pdo->prepare("INSERT INTO grade_history (grade_history_id, enrollment_subject_id, old_grade, new_grade, action_id, changed_by_user_id, reason) VALUES (:id, :enrollment_subject_id, :old_grade, :new_grade, :action_id, :user_id, :reason)");
         $stmt->execute(['id' => 1, 'enrollment_subject_id' => 1, 'old_grade' => null, 'new_grade' => 5.50, 'action_id' => 1, 'user_id' => 2, 'reason' => 'Първоначална оценка']);
 
-        $stmt = $pdo->prepare("INSERT INTO enrollment_history (enrollment_history_id, semester_enrollment_id, old_status_id, new_status_id, changed_by_user_id, reason) 
-                               VALUES (:id, :enrollment_id, :old_status, :new_status, :user_id, :reason)");
+        $stmt = $pdo->prepare("INSERT INTO enrollment_history (enrollment_history_id, semester_enrollment_id, old_status_id, new_status_id, changed_by_user_id, reason) VALUES (:id, :enrollment_id, :old_status, :new_status, :user_id, :reason)");
         $stmt->execute(['id' => 1, 'enrollment_id' => 1, 'old_status' => 1, 'new_status' => 1, 'user_id' => 1, 'reason' => 'Първоначално записване']);
 
+        $stmt = $pdo->prepare("INSERT INTO scholarship_application_status (application_status_id, status_name) VALUES (:id, :name)");
+        $stmt->execute(['id' => 1, 'name' => 'Чакаща']);
+        $stmt->execute(['id' => 2, 'name' => 'Одобрена']);
+        $stmt->execute(['id' => 3, 'name' => 'Отхвърлена']);
+
+        $stmt = $pdo->prepare("INSERT INTO scholarship_applications (application_id,semester_enrollment_id, gpa, application_status_id, reviewer_user_id, reviewer_comment,created_at,reviewed_at) VALUES (:id, :semester_enrollment_id, :gpa, :application_status_id,:reviewer_user_id, :reviewer_comment, NOW(),:reviewed_at)");
+        $stmt->execute(['id' => 1, 'semester_enrollment_id' => 1, 'gpa' => 5.00, 'application_status_id' => 2, 'reviewer_user_id' => 1,'reviewer_comment' => 'Одобрен поради добър академичен успех','reviewed_at' => date('Y-m-d H:i:s')]);
+        $stmt->execute(['id' => 2, 'semester_enrollment_id' => 2,'gpa' => 6.00,'application_status_id' => 1, 'reviewer_user_id' => null,'reviewer_comment' => null,'reviewed_at' => null]);
+        
         $pdo->commit();
     } catch (Exception $e) {
         $pdo->rollBack();
