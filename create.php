@@ -334,6 +334,7 @@ if ($count == 0) {
         $stmt = $pdo->prepare("INSERT INTO grade_history (grade_history_id, enrollment_subject_id, old_grade, new_grade, action_id, changed_by_user_id, reason) VALUES (:id, :enrollment_subject_id, :old_grade, :new_grade, :action_id, :user_id, :reason)");
         $stmt->execute(['id' => 1, 'enrollment_subject_id' => 1, 'old_grade' => null, 'new_grade' => 5.50, 'action_id' => 1, 'user_id' => 2, 'reason' => 'Първоначална оценка']);
         $stmt->execute(['id' => 2,'enrollment_subject_id' => 2,'old_grade' => null,'new_grade' => 4.50,'action_id' => 1,'user_id' => 2,'reason' => 'Първоначална оценка']);
+        
         $stmt = $pdo->prepare("INSERT INTO enrollment_history (enrollment_history_id, semester_enrollment_id, old_status_id, new_status_id, changed_by_user_id, reason) VALUES (:id, :enrollment_id, :old_status, :new_status, :user_id, :reason)");
         $stmt->execute(['id' => 1, 'enrollment_id' => 1, 'old_status' => 1, 'new_status' => 1, 'user_id' => 1, 'reason' => 'Първоначално записване']);
 
